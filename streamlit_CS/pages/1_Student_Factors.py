@@ -4,6 +4,11 @@ import altair as alt
 import plotly.express as px
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
+
+# Get the absolute path to the data file relative to this script
+DATA_PATH = Path(__file__).parent.parent / "data" / "StudentPerformanceFactors.csv"
+df = pd.read_csv(DATA_PATH)
 
 st.set_page_config(
     page_title="Student Performance Dashboard",
@@ -11,8 +16,10 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded")
 
-df = pd.read_csv("./data/StudentPerformanceFactors.csv")
-st.dataframe(df)
+## Make collapse for dataframe
+with st.expander("Data"):
+    st.dataframe(df)
+
 st.title("Student Performance Factors")
 st.divider()
 # ROW 1: 
