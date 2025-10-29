@@ -8,8 +8,10 @@ st.set_page_config(
     page_icon="🏂",
     layout="wide",
     initial_sidebar_state="expanded")
-st.title("Student Performance Factors")
 
+df = pd.read_csv("./data/StudentPerformanceFactors.csv")
+st.dataframe(df)
+st.title("Student Performance Factors")
 st.divider()
 # ROW 1: 
 col1_r1, col2_r1 = st.columns([2, 1])
