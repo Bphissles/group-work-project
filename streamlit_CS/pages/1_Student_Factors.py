@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 import plotly.express as px
+import matplotlib.pyplot as plt
+import numpy as np
 
 st.set_page_config(
     page_title="Student Performance Dashboard",
@@ -22,19 +24,22 @@ with col1_r1:
 
     # graph
     x_col, y_col = "Hours_Studied", "Exam_Score"
-    try:
-        if x_col in df.columns and y_col in df.columns:
-            plt.figure()
-            plt.scatter(df[x_col], df[y_col], alpha=0.6)
-            plt.title(f'Scatter — {x_col} vs {y_col}')
-            plt.xlabel(x_col)
-            plt.ylabel(y_col)
-            plt.grid(True)
-            plt.show()
-        else:
-            print('Set x_col and y_col to valid column names.')
-    except NameError:
-        print('Please load df first.')
+    if x_col in df.columns and y_col in df.columns:
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.scatter(df[x_col], df[y_col], alpha=0.6)
+        
+        # Add trendline
+        z = np.polyfit(df[x_col], df[y_col], 1)
+        p = np.poly1d(z)
+        ax.plot(df[x_col], p(df[x_col]), "r--", alpha=0.8, linewidth=2)
+        
+        ax.set_xlabel(x_col)
+        ax.set_ylabel(y_col)
+        ax.grid(True, alpha=0.3)
+        st.pyplot(fig)
+        plt.close()
+    else:
+        st.error('Column names not found in dataframe.')
 
 with col2_r1:
     st.subheader("Heading")
