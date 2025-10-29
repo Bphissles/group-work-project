@@ -12,6 +12,20 @@ with col1_r1:
     st.caption("Scatter plot + trendline")
 
     # graph
+    x_col, y_col = "Hours_Studied", "Exam_Score"
+    try:
+        if x_col in df.columns and y_col in df.columns:
+            plt.figure()
+            plt.scatter(df[x_col], df[y_col], alpha=0.6)
+            plt.title(f'Scatter — {x_col} vs {y_col}')
+            plt.xlabel(x_col)
+            plt.ylabel(y_col)
+            plt.grid(True)
+            plt.show()
+        else:
+            print('Set x_col and y_col to valid column names.')
+    except NameError:
+        print('Please load df first.')
 
 with col2_r1:
     st.subheader("Heading")
