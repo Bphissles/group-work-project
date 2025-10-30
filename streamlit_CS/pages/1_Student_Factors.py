@@ -116,7 +116,7 @@ with col2_r3:
     with pie_col1:
         pie_from_series(
             series=df["Internet_Access"],
-            categories=["Yes", "No"],
+            categories=["No", "Yes"],
             title="Internet Access"
         )
 
