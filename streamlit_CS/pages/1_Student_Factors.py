@@ -17,7 +17,15 @@ st.set_page_config(
     initial_sidebar_state="expanded")
 
 gender_choice = st.sidebar.selectbox("Gender", ["All", "Male", "Female"])
-df_filtered = df if gender_choice == "All" else df[df["Gender"] == gender_choice]
+family_choice = st.sidebar.selectbox("Family Income", ["All", "Low", "Medium", "High"])
+school_choice = st.sidebar.selectbox("School Type", ["All", "Public", "Private"])
+df_filtered = df.copy()
+if gender_choice != "All":
+    df_filtered = df_filtered[df_filtered["Gender"] == gender_choice]
+if family_choice != "All":
+    df_filtered = df_filtered[df_filtered["Family_Income"] == family_choice]
+if school_choice != "All":
+    df_filtered = df_filtered[df_filtered["School_Type"] == school_choice] 
 
 ## Make collapse for dataframe
 with st.expander("Data"):
