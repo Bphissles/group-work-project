@@ -94,27 +94,32 @@ with col2_r3:
             hole=0.3,
         )
         fig.update_traces(textposition="inside", textinfo="percent+label", sort=False)
-        fig.update_layout(margin=dict(l=0, r=0, t=50, b=0))
+        fig.update_layout(
+            title=dict(text=title, x=0.5, xanchor="center", y=0.97),
+            showlegend=True,
+            legend=dict(orientation="h", x=0.5, xanchor="center", y=1.08, yanchor="bottom"),
+            height=360,
+            margin=dict(l=10, r=10, t=60, b=10),
+            uniformtext_minsize=10,
+            uniformtext_mode="hide",
+        )
         st.plotly_chart(fig, use_container_width=True)
 
     pie_col1, pie_col2, pie_col3 = st.columns(3)
 
     with pie_col1:
-        st.subheader("Internet Access")
         pie_from_series(
             series=df["Internet_Access"],
             categories=["Yes", "No"]
         )
 
     with pie_col2:
-        st.subheader("Parental Involvement")
         pie_from_series(
             series=df["Parental_Involvement"],
             categories=["Low", "Medium", "High"]
         )
 
     with pie_col3:
-        st.subheader("Access to Resources")
         pie_from_series(
             series=df["Access_to_Resources"],
             categories=["Low", "Medium", "High"]
