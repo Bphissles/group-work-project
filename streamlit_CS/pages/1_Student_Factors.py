@@ -90,9 +90,10 @@ with col2_r3:
             names="label",
             values="count",
             title=title,
+            category_orders={"label": categories},
             hole=0.3,
         )
-        fig.update_traces(textposition="inside", textinfo="percent+label")
+        fig.update_traces(textposition="inside", textinfo="percent+label", sort=False)
         fig.update_layout(margin=dict(l=0, r=0, t=50, b=0))
         st.plotly_chart(fig, use_container_width=True)
 
@@ -102,24 +103,21 @@ with col2_r3:
         st.subheader("Internet Access")
         pie_from_series(
             series=df["Internet_Access"],
-            categories=["Yes", "No"],
-            title="Proportion of Internet Access"
+            categories=["Yes", "No"]
         )
 
     with pie_col2:
         st.subheader("Parental Involvement")
         pie_from_series(
             series=df["Parental_Involvement"],
-            categories=["Low", "Medium", "High"],
-            title="Parental Involvement Levels"
+            categories=["Low", "Medium", "High"]
         )
 
     with pie_col3:
         st.subheader("Access to Resources")
         pie_from_series(
             series=df["Access_to_Resources"],
-            categories=["Low", "Medium", "High"],
-            title="Access to Resources Levels"
+            categories=["Low", "Medium", "High"]
         )
 
 # Footer
