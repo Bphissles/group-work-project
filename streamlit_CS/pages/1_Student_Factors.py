@@ -80,13 +80,13 @@ with col1_r3:
 
 with col2_r3:
     def pie_from_series(series, categories, title=""):
-        if series.name not in df.columns:
-            st.error(f"Column '{series.name}' not found in dataframe.")
-            return
-
-        s = pd.Categorical(df[series.name], categories=categories, ordered=True)
+        s = pd.Categorical(series, categories=categories, ordered=True)
         counts = pd.Series(s).value_counts(dropna=True, sort=False)
         pie_df = counts.rename_axis("label").reset_index(name="count")
+
+        if pie_df["count"].sum() == 0:  # CHANGED: guard for empty selection after filtering
+            st.warning(f"No data to plot for {title}.")
+            return
 
         fig = px.pie(
             pie_df,
