@@ -76,16 +76,51 @@ with col1_r3:
     st.write("Big Copy")
 
 with col2_r3:
-    btn_col1, btn_col2, btn_col3 = st.columns(3)
-    
-    with btn_col1:
-        st.write("Big Copy")
-    
-    with btn_col2:
-        st.write("Big Copy")
-    
-    with btn_col3:
-        st.write("Big Copy")
+    def pie_from_series(series, categories, title):
+        if series.name not in df.columns:
+            st.error(f"Column '{series.name}' not found in dataframe.")
+            return
+
+        s = pd.Categorical(df[series.name], categories=categories, ordered=True)
+        counts = pd.Series(s).value_counts(dropna=True, sort=False)
+        pie_df = counts.rename_axis("label").reset_index(name="count")
+
+        fig = px.pie(
+            pie_df,
+            names="label",
+            values="count",
+            title=title,
+            hole=0.3,
+        )
+        fig.update_traces(textposition="inside", textinfo="percent+label")
+        fig.update_layout(margin=dict(l=0, r=0, t=50, b=0))
+        st.plotly_chart(fig, use_container_width=True)
+
+    pie_col1, pie_col2, pie_col3 = st.columns(3)
+
+    with pie_col1:
+        st.subheader("Internet Access")
+        pie_from_series(
+            series=df["Internet_Access"],
+            categories=["Yes", "No"],
+            title="Proportion of Internet Access"
+        )
+
+    with pie_col2:
+        st.subheader("Parental Involvement")
+        pie_from_series(
+            series=df["Parental_Involvement"],
+            categories=["Low", "Medium", "High"],
+            title="Parental Involvement Levels"
+        )
+
+    with pie_col3:
+        st.subheader("Access to Resources")
+        pie_from_series(
+            series=df["Access_to_Resources"],
+            categories=["Low", "Medium", "High"],
+            title="Access to Resources Levels"
+        )
 
 # Footer
 st.divider()
