@@ -21,7 +21,7 @@ df_filtered = df if gender_choice == "All" else df[df["Gender"] == gender_choice
 
 ## Make collapse for dataframe
 with st.expander("Data"):
-    st.dataframe(df)
+    st.dataframe(df_filtered)
 
 st.title("Student Performance Factors")
 st.divider()
@@ -34,14 +34,14 @@ with col1_r1:
 
     # graph
     x_col, y_col = "Hours_Studied", "Exam_Score"
-    if x_col in df.columns and y_col in df.columns:
+    if x_col in df_filtered.columns and y_col in df_filtered.columns:
         fig, ax = plt.subplots(figsize=(8, 5))
-        ax.scatter(df[x_col], df[y_col], alpha=0.6)
+        ax.scatter(df_filtered[x_col], df_filtered[y_col], alpha=0.6)
         
         # Add trendline
-        z = np.polyfit(df[x_col], df[y_col], 1)
+        z = np.polyfit(df_filtered[x_col], df_filtered[y_col], 1)
         p = np.poly1d(z)
-        ax.plot(df[x_col], p(df[x_col]), "r--", alpha=0.8, linewidth=2)
+        ax.plot(df_filtered[x_col], p(df_filtered[x_col]), "r--", alpha=0.8, linewidth=2)
         
         ax.set_xlabel(x_col)
         ax.set_ylabel(y_col)
