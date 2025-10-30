@@ -19,13 +19,19 @@ st.set_page_config(
 gender_choice = st.sidebar.selectbox("Gender", ["All", "Male", "Female"])
 family_choice = st.sidebar.selectbox("Family Income", ["All", "Low", "Medium", "High"])
 school_choice = st.sidebar.selectbox("School Type", ["All", "Public", "Private"])
+att_range = st.sidebar.slider("Attendance (%)", 60, 100, (60, 100), step=1)
+
 df_filtered = df.copy()
 if gender_choice != "All":
     df_filtered = df_filtered[df_filtered["Gender"] == gender_choice]
 if family_choice != "All":
     df_filtered = df_filtered[df_filtered["Family_Income"] == family_choice]
 if school_choice != "All":
-    df_filtered = df_filtered[df_filtered["School_Type"] == school_choice] 
+    df_filtered = df_filtered[df_filtered["School_Type"] == school_choice]
+att_min, att_max = att_range
+df_filtered = df_filtered[
+    pd.to_numeric(df_filtered["Attendance"], errors="coerce").between(att_min, att_max)
+]
 
 ## Make collapse for dataframe
 with st.expander("Data"):
