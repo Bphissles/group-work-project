@@ -76,7 +76,7 @@ with col1_r3:
     st.write("Big Copy")
 
 with col2_r3:
-    def pie_from_series(series, categories, title):
+    def pie_from_series(series, categories, title=""):
         if series.name not in df.columns:
             st.error(f"Column '{series.name}' not found in dataframe.")
             return
