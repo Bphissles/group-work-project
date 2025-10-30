@@ -97,7 +97,7 @@ with col2_r3:
         fig.update_layout(
             title=dict(text=title, x=0.5, xanchor="center", y=1),
             showlegend=True,
-            legend=dict(orientation="h", x=0.5, xanchor="center", y=-.1, yanchor="top"),
+            legend=dict(orientation="v", x=0.5, xanchor="center", y=-.1, yanchor="top"),
             height=360,
             margin=dict(l=10, r=10, t=40, b=80),
             uniformtext_minsize=10,
