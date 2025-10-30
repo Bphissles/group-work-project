@@ -16,6 +16,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded")
 
+gender_choice = st.sidebar.selectbox("Gender", ["All", "Male", "Female"])
+df_filtered = df if gender_choice == "All" else df[df["Gender"] == gender_choice]
+
 ## Make collapse for dataframe
 with st.expander("Data"):
     st.dataframe(df)
@@ -115,21 +118,21 @@ with col2_r3:
 
     with pie_col1:
         pie_from_series(
-            series=df["Internet_Access"],
+            series=df_filtered["Internet_Access"],
             categories=["No", "Yes"],
             title="Internet Access"
         )
 
     with pie_col2:
         pie_from_series(
-            series=df["Parental_Involvement"],
+            series=df_filtered["Parental_Involvement"],
             categories=["Low", "Medium", "High"],
             title="Parental Involvement"
         )
 
     with pie_col3:
         pie_from_series(
-            series=df["Access_to_Resources"],
+            series=df_filtered["Access_to_Resources"],
             categories=["Low", "Medium", "High"],
             title="Access to Resources"
         )
