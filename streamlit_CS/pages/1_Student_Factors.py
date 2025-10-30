@@ -92,6 +92,12 @@ with col2_r3:
             title=title,
             category_orders={"label": categories},
             hole=0.3,
+            color="label",
+            color_discrete_map={
+                "Yes": "green", "High": "green",
+                "No": "red", "Low": "red",
+                "Medium": "yellow"
+            },
         )
         fig.update_traces(textposition="inside", textinfo="percent+label", sort=False)
         fig.update_layout(
