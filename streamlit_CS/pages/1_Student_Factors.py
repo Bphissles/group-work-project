@@ -110,19 +110,22 @@ with col2_r3:
     with pie_col1:
         pie_from_series(
             series=df["Internet_Access"],
-            categories=["Yes", "No"]
+            categories=["Yes", "No"],
+            title="Internet Access"
         )
 
     with pie_col2:
         pie_from_series(
             series=df["Parental_Involvement"],
-            categories=["Low", "Medium", "High"]
+            categories=["Low", "Medium", "High"],
+            title="Parental Involvement"
         )
 
     with pie_col3:
         pie_from_series(
             series=df["Access_to_Resources"],
-            categories=["Low", "Medium", "High"]
+            categories=["Low", "Medium", "High"],
+            title="Access to Resources"
         )
 
 # Footer
