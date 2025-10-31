@@ -66,8 +66,8 @@ with col1_r1:
         st.error('Column names not found in dataframe.')
 
 with col2_r1:
-    st.subheader("Heading")
-    st.write("Big Copy")
+    st.subheader("Correlation Between Study Time and Exam Scores")
+    st.write("From the scatterplot it is clear there is a strong positive correlation between a student's study time and their resulting exam score. Students who put it the effort to study for long hours are likely to receive high remarks on their grades.")
 
 st.divider()
 # ROW 2:
@@ -89,8 +89,8 @@ st.divider()
 col1_r3, col2_r3 = st.columns([1, 2])
 
 with col1_r3:
-    st.subheader("Heading")
-    st.write("Big Copy")
+    st.subheader("Outside Resources Proportions")
+    st.write("The vast majority of students have access to the internet, regardless of their circumstances at home. Most students also have access to sufficient academic resources at home, and the same can be said for the help they receive in the form of parental involvement. All of these are crucial underlying factors that contribute to students' exam scores.")
 
 with col2_r3:
     def pie_from_series(series, categories, title=""):
