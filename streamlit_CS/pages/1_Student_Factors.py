@@ -3,6 +3,7 @@ import pandas as pd
 import altair as alt
 import plotly.express as px
 import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 from pathlib import Path
 
@@ -16,10 +17,68 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded")
 
+# Color theme definitions
+COLOR_THEMES = {
+    "Ocean Blue": {
+        "scatter_primary": "#1f77b4",
+        "scatter_secondary": "#ff7f0e",
+        "heatmap": "Blues",
+        "pie_colors": {"Yes": "#2E86AB", "High": "#2E86AB", "No": "#A23B72", "Low": "#A23B72", "Medium": "#F18F01"}
+    },
+    "Sunset Warm": {
+        "scatter_primary": "#e74c3c",
+        "scatter_secondary": "#f39c12",
+        "heatmap": "YlOrRd",
+        "pie_colors": {"Yes": "#e67e22", "High": "#e67e22", "No": "#c0392b", "Low": "#c0392b", "Medium": "#f39c12"}
+    },
+    "Forest Green": {
+        "scatter_primary": "#27ae60",
+        "scatter_secondary": "#16a085",
+        "heatmap": "Greens",
+        "pie_colors": {"Yes": "#27ae60", "High": "#27ae60", "No": "#e74c3c", "Low": "#e74c3c", "Medium": "#f39c12"}
+    },
+    "Purple Haze": {
+        "scatter_primary": "#9b59b6",
+        "scatter_secondary": "#8e44ad",
+        "heatmap": "Purples",
+        "pie_colors": {"Yes": "#9b59b6", "High": "#9b59b6", "No": "#e74c3c", "Low": "#e74c3c", "Medium": "#f39c12"}
+    },
+    "Teal Mint": {
+        "scatter_primary": "#16a085",
+        "scatter_secondary": "#1abc9c",
+        "heatmap": "YlGnBu",
+        "pie_colors": {"Yes": "#1abc9c", "High": "#1abc9c", "No": "#e74c3c", "Low": "#e74c3c", "Medium": "#f39c12"}
+    },
+    "Classic": {
+        "scatter_primary": "#3498db",
+        "scatter_secondary": "#e74c3c",
+        "heatmap": "viridis",
+        "pie_colors": {"Yes": "green", "High": "green", "No": "red", "Low": "red", "Medium": "yellow"}
+    }
+}
+
+# Sidebar controls
+st.sidebar.header("🎨 Visualization Settings")
+color_theme = st.sidebar.selectbox(
+    "Color Theme",
+    options=list(COLOR_THEMES.keys()),
+    index=0
+)
+theme = COLOR_THEMES[color_theme]
+
+st.sidebar.divider()
+st.sidebar.header("📊 Data Filters")
+st.sidebar.caption("Filter the dataset to analyze specific student groups")
+
 gender_choice = st.sidebar.selectbox("Gender", ["All", "Male", "Female"])
 family_choice = st.sidebar.selectbox("Family Income", ["All", "Low", "Medium", "High"])
 school_choice = st.sidebar.selectbox("School Type", ["All", "Public", "Private"])
 att_range = st.sidebar.slider("Attendance (%)", 60, 100, (60, 100), step=1)
+
+# Reset button
+if st.sidebar.button("🔄 Reset All Filters", use_container_width=True):
+    st.session_state.clear()
+    st.rerun()
 
 df_filtered = df.copy()
 if gender_choice != "All":
@@ -34,11 +93,10 @@ df_filtered = df_filtered[
 ]
 
 ## Make collapse for dataframe
-with st.expander("Data"):
-    st.dataframe(df_filtered)
+# with st.expander("Data"):
+#     st.dataframe(df_filtered)
 
 st.title("Student Performance Factors")
-st.divider()
 # ROW 1: 
 col1_r1, col2_r1 = st.columns([2, 1])
 
@@ -49,16 +107,16 @@ with col1_r1:
     # graph
     x_col, y_col = "Hours_Studied", "Exam_Score"
     if x_col in df_filtered.columns and y_col in df_filtered.columns:
-        fig, ax = plt.subplots(figsize=(8, 5))
-        ax.scatter(df_filtered[x_col], df_filtered[y_col], alpha=0.6)
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.scatter(df_filtered[x_col], df_filtered[y_col], alpha=0.6, color=theme["scatter_primary"])
         
         # Add trendline
         z = np.polyfit(df_filtered[x_col], df_filtered[y_col], 1)
         p = np.poly1d(z)
-        ax.plot(df_filtered[x_col], p(df_filtered[x_col]), "r--", alpha=0.8, linewidth=2)
+        ax.plot(df_filtered[x_col], p(df_filtered[x_col]), "--", alpha=0.8, linewidth=2, color=theme["scatter_secondary"])
         
-        ax.set_xlabel(x_col)
-        ax.set_ylabel(y_col)
+        ax.set_xlabel("Hours Studied")
+        ax.set_ylabel("Exam Score")
         ax.grid(True, alpha=0.3)
         st.pyplot(fig)
         plt.close()
@@ -69,22 +127,74 @@ with col2_r1:
     st.subheader("Correlation Between Study Time and Exam Scores")
     st.write("From the scatterplot it is clear there is a strong positive correlation between a student's study time and their resulting exam score. Students who put it the effort to study for long hours are likely to receive high remarks on their grades.")
 
-st.divider()
 # ROW 2:
 col1_r2, col2_r2, col3_r2 = st.columns(3)
 
 with col1_r2:
-    st.subheader("Activity Vs Exam Score Heatmap")
+    st.subheader("Physical Activity Vs Exam Score")
+    
+    # Create bins for physical activity and exam scores
+    if 'Physical_Activity' in df_filtered.columns and 'Exam_Score' in df_filtered.columns:
+        # Create a pivot table for the heatmap
+        activity_bins = pd.cut(df_filtered['Physical_Activity'], bins=5, labels=['Very Low', 'Low', 'Medium', 'High', 'Very High'])
+        score_bins = pd.cut(df_filtered['Exam_Score'], bins=5, labels=['60-68', '68-76', '76-84', '84-92', '92-100'])
+        
+        heatmap_data = pd.crosstab(score_bins, activity_bins)
+        
+        fig, ax = plt.subplots(figsize=(6, 5))
+        sns.heatmap(heatmap_data, annot=True, fmt='d', cmap=theme["heatmap"], ax=ax, cbar_kws={'label': 'Count'})
+        ax.set_xlabel('Physical Activity (hours/week)')
+        ax.set_ylabel('Exam Score Range')
+        plt.tight_layout()
+        st.pyplot(fig)
+        plt.close()
+    else:
+        st.error('Required columns not found.')
 
 with col2_r2:
-    st.subheader("Heading")
-    st.write("Big Copy")
+    st.subheader("Key Insights")
+    
+    # Calculate correlations and statistics
+    if 'Physical_Activity' in df_filtered.columns and 'Sleep_Hours' in df_filtered.columns and 'Exam_Score' in df_filtered.columns:
+        activity_corr = df_filtered['Physical_Activity'].corr(df_filtered['Exam_Score'])
+        sleep_corr = df_filtered['Sleep_Hours'].corr(df_filtered['Exam_Score'])
+        
+        avg_activity = df_filtered['Physical_Activity'].mean()
+        avg_sleep = df_filtered['Sleep_Hours'].mean()
+        avg_score = df_filtered['Exam_Score'].mean()
+        
+        st.write(f"**Physical Activity Correlation:** {activity_corr:.3f}")
+        st.write(f"**Sleep Hours Correlation:** {sleep_corr:.3f}")
+        st.write("")
+        st.write(f"Students average **{avg_activity:.1f} hours/week** of physical activity and **{avg_sleep:.1f} hours** of sleep per night, with an average exam score of **{avg_score:.1f}**.")
+        st.write("")
+        
+        # Key findings based on data analysis
+        st.write("➡️ Physical activity shows **minimal correlation** with exam scores.")
+        st.write("")
+        st.write("➡️ Sleep hours show **minimal correlation** with exam scores.")
 
 with col3_r2:
-    st.subheader("Sleep Vs Exam Score Heatmap")
-    st.write("Big Copy")
+    st.subheader("Sleep Hours Vs Exam Score")
+    
+    # Create bins for sleep hours and exam scores
+    if 'Sleep_Hours' in df_filtered.columns and 'Exam_Score' in df_filtered.columns:
+        # Create a pivot table for the heatmap
+        sleep_bins = pd.cut(df_filtered['Sleep_Hours'], bins=5, labels=['4-5h', '5-6h', '6-7h', '7-8h', '8-10h'])
+        score_bins = pd.cut(df_filtered['Exam_Score'], bins=5, labels=['60-68', '68-76', '76-84', '84-92', '92-100'])
+        
+        heatmap_data = pd.crosstab(score_bins, sleep_bins)
+        
+        fig, ax = plt.subplots(figsize=(6, 5))
+        sns.heatmap(heatmap_data, annot=True, fmt='d', cmap=theme["heatmap"], ax=ax, cbar_kws={'label': 'Count'})
+        ax.set_xlabel('Sleep Hours per Night')
+        ax.set_ylabel('Exam Score Range')
+        plt.tight_layout()
+        st.pyplot(fig)
+        plt.close()
+    else:
+        st.error('Required columns not found.')
 
-st.divider()
 # ROW 3:
 col1_r3, col2_r3 = st.columns([1, 2])
 
@@ -110,11 +220,7 @@ with col2_r3:
             category_orders={"label": categories},
             hole=0.3,
             color="label",
-            color_discrete_map={
-                "Yes": "green", "High": "green",
-                "No": "red", "Low": "red",
-                "Medium": "yellow"
-            },
+            color_discrete_map=theme["pie_colors"],
         )
         fig.update_traces(textposition="inside", textinfo="percent+label", sort=False)
         fig.update_layout(
@@ -151,6 +257,16 @@ with col2_r3:
             title="Access to Resources"
         )
 
-# Footer
 st.divider()
-st.caption("Data source")
+
+# Footer
+st.caption("**Data source:** https://www.kaggle.com/datasets/lainguyn123/student-performance-factors")
+
+# Read the CSV file for download
+csv_data = df.to_csv(index=False).encode('utf-8')
+st.download_button(
+    label="📥 Download Raw Data (CSV)",
+    data=csv_data,
+    file_name="StudentPerformanceFactors.csv",
+    mime="text/csv",
+)
