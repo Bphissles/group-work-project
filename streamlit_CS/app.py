@@ -7,9 +7,21 @@ st.set_page_config(
 )
 
 st.title("Student Performance Factors")
+
 st.markdown(
     """
-    Use the left sidebar to switch pages.
+    ### 📚 About This Dashboard
+    
+    This interactive dashboard analyzes factors that influence student academic performance based on a dataset 
+    of over 6,000 students. Explore how various elements correlate with exam scores.
+    
+    **Key Features:**
+    - 🎨 **Customizable Themes** - Choose from 6 color schemes
+    - 📊 **Interactive Filters** - Filter by gender, income, school type, and attendance
+    - 📈 **Visual Analytics** - Scatter plots, heatmaps, and pie charts
+    - 💾 **Data Export** - Download the raw dataset for further analysis
+    
+    **Navigate to the Student Factors page** using the sidebar to begin exploring the data.
     """
 )
 

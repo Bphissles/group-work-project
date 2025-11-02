@@ -262,6 +262,9 @@ st.divider()
 # Footer
 st.caption("**Data source:** https://www.kaggle.com/datasets/lainguyn123/student-performance-factors")
 
+with st.expander("Data Preview"):
+    st.dataframe(df)
+
 # Read the CSV file for download
 csv_data = df.to_csv(index=False).encode('utf-8')
 st.download_button(
