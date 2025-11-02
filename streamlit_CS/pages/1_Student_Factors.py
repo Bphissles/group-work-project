@@ -70,14 +70,22 @@ st.sidebar.divider()
 st.sidebar.header("📊 Data Filters")
 st.sidebar.caption("Filter the dataset to analyze specific student groups")
 
-gender_choice = st.sidebar.selectbox("Gender", ["All", "Male", "Female"])
-family_choice = st.sidebar.selectbox("Family Income", ["All", "Low", "Medium", "High"])
-school_choice = st.sidebar.selectbox("School Type", ["All", "Public", "Private"])
-att_range = st.sidebar.slider("Attendance (%)", 60, 100, (60, 100), step=1)
+# Check if reset was requested and clear filter keys before widgets are created
+if st.session_state.get("reset_filters", False):
+    for key in ["gender_filter", "family_filter", "school_filter", "attendance_filter"]:
+        if key in st.session_state:
+            del st.session_state[key]
+    st.session_state.reset_filters = False
+
+gender_choice = st.sidebar.selectbox("Gender", ["All", "Male", "Female"], key="gender_filter")
+family_choice = st.sidebar.selectbox("Family Income", ["All", "Low", "Medium", "High"], key="family_filter")
+school_choice = st.sidebar.selectbox("School Type", ["All", "Public", "Private"], key="school_filter")
+att_range = st.sidebar.slider("Attendance (%)", 60, 100, (60, 100), step=1, key="attendance_filter")
 
 # Reset button
 if st.sidebar.button("🔄 Reset All Filters", use_container_width=True):
-    st.session_state.clear()
+    # Set flag to reset on next rerun
+    st.session_state.reset_filters = True
     st.rerun()
 
 df_filtered = df.copy()
